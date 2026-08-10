@@ -18,29 +18,22 @@
 
 ## 安装
 
-[Codex 官方文档](https://developers.openai.com/codex/skills)指定 `$HOME/.agents/skills` 为用户级 skill 目录，并支持符号链接。
-
-先克隆仓库：
+[skills CLI](https://www.skills.sh/docs/cli) 可以直接从 GitHub 安装本仓库中的 skills。使用 Bun 将需要的 skills 安装到 Codex 的用户级全局目录：
 
 ```bash
-git clone https://github.com/Ikaleio/skills.git "$HOME/.local/share/ikaleio-codex-skills"
-mkdir -p "$HOME/.agents/skills"
+bunx skills add Ikaleio/skills --global --agent codex
 ```
 
-再安装需要的 skill：
+安装全部 skills，并跳过交互确认：
 
 ```bash
-ln -s \
-  "$HOME/.local/share/ikaleio-codex-skills/ste-writing" \
-  "$HOME/.agents/skills/ste-writing"
+bunx skills add Ikaleio/skills --global --agent codex --skill '*' --yes
 ```
 
-如需安装其他 skill，请替换命令中的目录名。如果目标目录已经存在，请先检查并备份现有内容。
-
-更新仓库后，符号链接会直接使用新内容：
+更新已安装的全局 skills：
 
 ```bash
-git -C "$HOME/.local/share/ikaleio-codex-skills" pull --ff-only
+bunx skills update --global
 ```
 
 ## 许可
