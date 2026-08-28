@@ -1,6 +1,6 @@
 # Codex Skills
 
-本仓库保存 Ikaleio 使用的用户级全局 skills。当前内容同步自本机的非系统 skill 目录，快照日期为 2026-08-10。
+本仓库保存 Ikaleio 使用的用户级全局 skills。当前内容同步自本机的非系统 skill 目录，快照日期为 2026-08-28。
 
 仓库不包含 Codex 内置的 `.system` skills，也不包含插件缓存。
 
@@ -11,6 +11,7 @@
 | `agent-browser` | 通过命令行自动操作浏览器和 Electron 应用。 |
 | `grill-me` | 逐项追问并检验计划或设计中的决策。 |
 | `image-to-code` | 先生成和分析设计图，再实现视觉要求较高的网站。 |
+| `ikadesign` | 设计和实现信息密度合理、响应式且可验收的生产级界面。 |
 | `notion-spec-to-implementation` | 把 Notion 规格转换为实施计划、任务和进度记录。 |
 | `shadcn` | 管理、检索、调试和组合 shadcn/ui 组件。 |
 | `ste-writing` | 用受控技术写作规则编写或审查技术文本。 |
