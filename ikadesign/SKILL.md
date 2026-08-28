@@ -532,4 +532,3 @@ When the user requests a clone or supplies a reference:
 # Final Principle
 
 Utility interfaces should feel compact, calm, aligned, and immediately usable. Marketing interfaces may be expressive, but no interface should trade clarity for empty space or novelty. Character should come from typography, rhythm, proportion, states, and detail—not from giant blank cards, tiny text, arbitrary misalignment, or leaked implementation language.
-
