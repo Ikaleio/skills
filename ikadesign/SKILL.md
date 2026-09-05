@@ -1,534 +1,277 @@
 ---
 name: ikadesign
-description: Design and implement polished, production-ready interfaces with explicit rules for information density, typography, grid alignment, responsive behavior, user-facing copy, accessibility, security, and visual QA. Adapt to the project's existing framework and component system.
+description: Design and build distinctive, usable interfaces with task-appropriate density, readable typography, shared alignment rules, responsive layouts, audience-safe copy, and explicit visual verification. Adapt to the authorized project environment and its available tooling.
 ---
 
-# IkaDesign
+# ikadesign
 
-Create polished, usable interfaces that feel intentional at every viewport. Match the user's requirements and the existing product before adding stylistic ideas. For application UI, clarity, task completion, information hierarchy, and spatial efficiency are more important than decorative novelty.
+## 1. Operating Contract
 
-Use this priority order whenever rules compete:
+Apply these rules when designing, building, or revising an interface.
 
-1. The user's explicit requirements and supplied reference.
-2. Existing project conventions, components, tokens, and product terminology.
-3. Functional correctness, security, accessibility, and truthful states.
-4. Information architecture, density, alignment, and responsive behavior.
-5. Visual character and decorative detail.
+- Respect the user's task, supplied references, brand direction, and explicit source/inspection restrictions. Do not retrieve memories, inspect repositories, or seek outside examples when the user prohibits them.
+- Treat the numeric values below as starting defaults for a balanced application UI, not universal limits. A clear user requirement or documented content need can override them. Security, truthful states, and accessible operation remain requirements.
+- Optimize task clarity and legibility before decorative composition. Preserve character; do not turn every product into the same dense dashboard.
+- Let content determine the size of ordinary panels. Do not manufacture height or stretch a few lines across a large surface to make a page look substantial.
+- Define typography by semantic role and geometry by component family. Related components must share the appropriate dimensions and alignment tracks.
+- Distinguish loading, empty, unavailable, error, and populated states. Their layouts do not automatically need the same height.
+- Display product information for the current audience, not development commentary or raw implementation failures.
+- Verify the rendered result when tools permit. Passing a build is not evidence of visual correctness. Never claim tests or visual inspection that did not occur.
 
-Do not expose scratch notes, design reasoning, framework choices, implementation details, or hidden system state in the rendered interface.
+## 2. Write a Task-and-Design Brief
 
-# Non-Negotiable Acceptance Gate
+Before substantive implementation, record a short brief in working notes or the delivery discussion, never inside the product UI. Include:
 
-The work is not finished while any of the following is true:
+1. **Audience and task:** Who uses this screen? What must they understand or do first? Identify the primary action, or explicitly note that this is a read-only/unavailable state.
+2. **Content and states:** Identify the real information hierarchy, data availability, and relevant loading/empty/error/permission variants. Do not invent data to improve a composition.
+3. **Interface mode and density:** Choose a mode below and state the intended density.
+4. **Layout contract:** Identify shared columns, component families, content-width behavior, and the main content that should begin in the reference desktop viewport.
+5. **Visual direction:** Specify mood, a small palette of color roles, font roles with language coverage, and spacing/radius choices.
+6. **Acceptance checks:** Select representative viewport sizes, long-content cases, and the states most likely to break the layout.
 
-- A dashboard, admin page, settings page, form, or data tool is dominated by empty space without a functional reason.
-- Essential UI text is below the project's legible body/control token (normally `text-sm` or its semantic equivalent), metadata sizing is used for primary information, or the type hierarchy is too weak to scan quickly.
-- Repeated or parallel elements that represent the same kind of information have inconsistent widths, heights, padding, icon boxes, control heights, or title positions without a semantic reason.
-- Major page edges, section headings, cards, table columns, or action rows do not align to a shared grid.
-- A card has a fixed or minimum height that creates empty space rather than serving charts, media, loading states, or a deliberate full-page state.
-- A utility page uses marketing-style hero spacing, oversized headings, or decorative imagery that reduces task density.
-- Raw errors, environment variables, API routes, package names, database fields, file paths, IDs, stack traces, TODO text, mock-data notices, or other implementation details are visible to ordinary users.
-- The layout has not been checked in loading, empty, error, long-content, mobile, tablet, and desktop states.
-- The implementation compiles but has not been visually inspected and corrected.
+Choose density according to the task:
 
-When a failure is found, revise the implementation before presenting it. Do not merely mention the problem.
+| Mode | Default approach |
+| --- | --- |
+| Dashboard, console, settings, billing | Balanced density; compact summaries; substantive controls or records appear early. Avoid promotional hero proportions. |
+| Table, monitoring, professional workspace | Denser repetition with readable text and adequate interaction targets. Viewport-filling work areas can be appropriate. |
+| Reading, documentation, article | Constrain text measure and support sustained reading. Side space is not inherently waste. |
+| Marketing, editorial, portfolio | More expressive typography and whitespace when they support narrative, imagery, and action. |
+| Focused flow, onboarding, authentication | Keep the task coherent and bounded. Do not fill the screen with unrelated information. |
 
-# Required Workflow
+For a new application screen without another direction, use balanced density. Mobile-first means adapting composition to available space, not keeping desktop typography small or preserving mobile stacking everywhere.
 
-## 1. Inspect Before Editing
+## 3. Content-Driven Layout and Density
 
-Inspect the repository broadly before changing UI:
+### Give every large surface a reason
 
-- Detect the framework, package manager, routing system, React version, Tailwind setup, component library, icon set, fonts, theme tokens, data-fetching conventions, form library, validation library, and test setup.
-- Find the actual page, its parent layout, global styles, neighboring pages, and existing examples of the same component type.
-- Check whether a wrapper already controls width, padding, height, overflow, or typography before patching a child.
-- When multiple candidate files exist, inspect all relevant candidates and verify their relationships.
-- Prefer the project's established patterns over introducing a second design or data layer.
-- Do not hard-code rules for a framework or library version without verifying the installed version through the project files, types, or official documentation available in the environment.
+- Ordinary cards, summaries, notices, and empty sections use intrinsic height. Their height should follow content, line-height, padding, and gaps.
+- Do not apply fixed heights, large `min-height`, viewport-height units, `aspect-ratio`, or `h-full` to ordinary information cards merely for visual impact.
+- Explicit height is appropriate for justified workspaces, media, maps, charts, virtualized lists, and specific reference designs. State the content or interaction reason, not just a desire to fill space.
+- Equal-height peer cards may stretch within a shared content-sized grid row. This does not justify stretching the grid to the viewport or giving all unrelated cards the same minimum height.
+- Use `justify-between` to separate real groups, such as a toolbar's title and actions. Do not use it to distribute a label, value, and caption across an unnecessarily tall card.
+- Anchoring account controls to the bottom of a sidebar or actions to the bottom of genuine peer cards is legitimate. It is not a reason to enlarge those containers.
+- Leave unused space outside a compact completed section rather than inflating its internals. Do not add fake metrics, illustrations, tips, or extra cards to increase occupancy.
 
-## 2. Classify the Interface
+### Establish a spacing budget
 
-Classify the page before choosing spacing or typography:
+For a balanced application UI, start with these values and adjust deliberately:
 
-- `utility`: dashboards, consoles, admin panels, tables, billing, settings, CRUD, monitoring, developer tools.
-- `form`: onboarding, checkout, account forms, multi-step workflows.
-- `content`: documentation, articles, reading views, detail pages.
-- `marketing`: landing pages, campaigns, product storytelling.
+| Relationship | Starting range |
+| --- | --- |
+| Icon to label; tightly related elements | `0.375–0.75rem` |
+| Related rows or field groups | `0.5–1rem` |
+| Panel padding | `1–1.5rem` |
+| Sibling panels or major sections | `1–1.5rem` |
+| Page gutter | `1rem` on narrow screens; `1.5–2rem` on desktop |
 
-Default density by page type:
+Use a small spacing scale. Make the distance within a group smaller than the distance between unrelated groups.
 
-- Utility: comfortable; use compact density when information volume is high.
-- Form: comfortable, narrow enough for reading and completion.
-- Content: readable, with a controlled line length.
-- Marketing: spacious only when it supports hierarchy and storytelling.
+These are defaults, not commands to use the maximum everywhere. Audit stacked page padding, section padding, card padding, and child margins; individually reasonable values can create excessive cumulative space.
 
-Never apply marketing-page spacing to utility UI by default.
+A utility panel with only a few short content rows but roughly `16rem` or more of height is a review trigger, not an automatic failure. Check whether media, a real interaction, or its peer content actually explains that height.
 
-## 3. Create a Private Design Contract
+### Match width to content
 
-Before implementation, make a short private design contract. Do not print it in the user-facing UI or response unless the user asks for it. Record:
+- Reason about the width available inside the shell, after sidebars and gutters, rather than the viewport width alone.
+- Use a shared page container and alignment edges. Avoid unrelated nested `max-width` wrappers that create progressively narrower content.
+- Let tables, dashboards, and work areas use appropriate available width. Constrain reading passages and focused forms where that improves comprehension.
+- Do not stretch a single short field or notice across a huge width without a compositional reason; group it with related content or bound that region.
+- At the chosen reference desktop size, aim to reveal the main working section or its beginning beneath the summary. Do not force every record or every screen into one viewport.
+- When supporting information pushes the primary task down, first reduce redundant copy, oversized containers, and repeated framing. Do not start by shrinking the text.
 
-- Page type and density preset.
-- Primary user task and secondary tasks.
-- Content hierarchy and section order.
-- Main content width and column plan at mobile, tablet, and desktop sizes.
-- Core palette and semantic status colors.
-- Font family, CJK fallback, type scale, and numeric treatment.
-- Spacing rhythm, card padding, control height, icon size, border radius, and border treatment.
-- Loading, empty, error, disabled, and permission states.
+## 4. Layout Geometry and Alignment
 
-Implement against this contract consistently.
+Choose layout primitives by the relationship being represented, not by a blanket Flexbox-first rule.
 
-## 4. Define User-Facing Content Before Layout
+- Use **Grid** for peer cards, aligned form columns, repeated metrics, and content whose column edges must line up. Even a simple two-column layout can benefit from Grid.
+- Use **Flexbox** for one-dimensional relationships: icon-label pairs, toolbar groups, button contents, and linear navigation.
+- Use normal document flow for prose and simple vertical sections. Use semantic tables for genuinely tabular data.
+- Use absolute positioning for overlays, anchored decorations, and similar intentional layers, not as a substitute for normal page layout.
 
-List the visible information and actions before styling. Distinguish:
+### Shared geometry contracts
 
-- User data and domain concepts.
-- User-visible operational states.
-- Primary and secondary actions.
-- Help text that changes a user's decision.
-- Technical diagnostics that belong only in logs or an explicitly requested, permission-gated diagnostics view.
+For each component family, define the relevant shared properties before rendering variants: control height, padding, icon box, text style, header structure, column widths, and action alignment.
 
-Do not invent product capabilities, account states, limits, prices, permissions, integrations, or error causes that are not supported by the requirements or available data.
+- Equal-rank sibling cards use shared tracks, such as `repeat(n, minmax(0, 1fr))`, when equal widths are intended. Do not approximate a grid with content-sized cards and `justify-between`.
+- Use `min-w-0` on shrinkable grid/flex children and choose intentional wrapping or truncation. Do not let a long label silently widen one peer or overflow the page.
+- Repeated headers align to the same inset; repeated values align to their intended baseline; matching control groups share height and padding.
+- Align related label/control rows through shared columns or a shared layout component, not manual spaces or unrelated per-row offsets.
+- If variable-length card content needs aligned footers, use a shared row structure or content-sized stretched peers with intentionally anchored footers. Do not clamp meaningful copy just to hide a mismatch.
+- Equalize like with like: matching cards, buttons, fields, or tabs within a group. Unrelated panels and primary/secondary action variants do not need identical dimensions.
 
-## 5. Implement Structure Before Decoration
+### Vertical centering versus baseline alignment
 
-Build in this order:
+- Button and icon-label contents normally use `inline-flex`, `items-center`, a shared gap, and a predictable icon box.
+- Make icons non-shrinking and block-level where appropriate. Check SVG viewBox whitespace when an icon appears off-center despite correct box alignment.
+- Center single-line control content within its control. For multi-line titles with actions, choose top alignment or another intentional relationship rather than blindly centering everything.
+- Align adjacent text and numeric values by baseline when their font sizes differ. Centering their boxes is not necessarily the intended alignment.
+- Check actual font fallback, glyph appearance, line-height, and asymmetric padding before changing positions.
+- Avoid item-specific `top`, negative margins, or `translateY` patches. A small optical correction is allowed only after those checks and should belong to a shared, documented component variant.
 
-1. Semantic page regions and content order.
-2. Responsive shell and primary grid.
-3. Reusable repeated components.
-4. Typography hierarchy and spacing.
-5. States, interactions, and accessibility.
-6. Color, borders, icons, charts, and restrained visual polish.
+### Spacing responsibilities
 
-Do not use decorative elements to conceal weak information architecture.
+- Padding controls a container's internal inset; gap controls separation among its children; margin controls its relationship to surrounding content. They may coexist.
+- `grid gap-4 p-5` is a normal valid combination. Do not prohibit padding and gap on the same element.
+- Prefer one owner for each inter-element relationship. Do not combine child margins and parent gaps to accidentally count the same space twice.
+- Prefer gap for repeated children. Use margins intentionally for document flow or anchoring, not as an improvised layout grid.
 
-## 6. Verify and Iterate
+## 5. Typography and Optical Scale
 
-When browser, preview, or screenshot tools are available, run the app and inspect it at 100% zoom. At minimum, check:
+Define semantic type roles rather than choosing sizes independently in each component.
 
-- 390 × 844 mobile.
-- 768 × 1024 tablet.
-- 1440 × 900 desktop.
-- 1920 × 1080 for desktop-first consoles or dashboards.
+For balanced application interfaces, use the following starting scale. The pixel equivalents assume a browser root size of 16px; keep sizing relative and respect user scaling.
 
-Inspect at least these states when applicable:
+| Role | Starting size |
+| --- | --- |
+| Page title | `1.75–2rem` / 28–32px |
+| Section or card heading | `1.125–1.25rem` / 18–20px |
+| Main body, explanatory text, form entry | `1rem` / 16px |
+| Navigation and control labels | `0.875–1rem` / 14–16px; favor the upper end for Chinese UI |
+| Secondary metadata and supporting labels | `0.875rem` / 14px |
+| Important summary number | `2–2.75rem` / 32–44px, only when its importance warrants it |
 
-- Normal populated state.
-- Loading or skeleton state.
-- Empty state.
-- Error state.
-- Long names, large numbers, translated text, and wrapped descriptions.
-- Disabled and permission-restricted actions.
+- Do not make 14px the default size for the whole application. Secondary metadata must remain secondary in both role and frequency.
+- Do not use text below `0.875rem` in ordinary application UI. Exceptions require a deliberate specialist/dense requirement and a legibility check; never use them to rescue an oversized layout.
+- Do not enlarge every heading and value to compensate for oversized containers. Fix the container and the hierarchy together.
+- Use body line-height around 1.45–1.65, favoring roughly 1.5–1.7 for multi-line Chinese text. Headings and short controls can be tighter, but must not clip glyphs.
+- Do not set the root font size below the user's normal setting to make rem-based UI smaller. Do not disable browser zoom or scale the entire page to fit.
+
+### Font roles and language coverage
+
+- Default to one intentional UI text family. Add at most one intentional display or monospace family when the product benefits. Language fallbacks are not extra decorative font choices.
+- For Chinese interfaces, use a coherent CJK-capable sans-serif stack unless the brief explicitly calls for a different style. A Latin font choice alone does not specify Chinese typography.
+- Do not apply serif headings by habit to a utility console. Use them only when they fit the actual visual direction and their CJK rendering has been checked.
+- Inspect representative Chinese, English, numerals, and punctuation with the fonts actually loaded. Check fallback and loading behavior when custom fonts are used.
+- Use tabular numerals for comparable amounts, counts, and changing metrics when supported by the chosen font. Keep units and currency labels legible.
+- Apply font roles through project-compatible tokens. Avoid self-referential font variables or assuming that a CSS variable alone loads or applies a font.
+- Use balanced wrapping for display headings when helpful. Do not force balancing, no-wrap, or truncation on every short application label.
+
+## 6. State-Aware Composition
+
+Design the relevant states explicitly instead of dropping different text into an unchanged large card.
 
-Do not stop at the first render. Fix visible density, alignment, overflow, hierarchy, or copy problems and inspect again.
+- **Loading:** Use a restrained indicator or skeleton that approximates the expected structure when useful for stability. Reserve space for content that is actually expected, not for speculative widgets.
+- **Empty:** Explain what is absent and provide one relevant next action when available. Embedded empty states should normally collapse to a compact row or content-sized panel.
+- **Unavailable or unconfigured:** State the capability's status and an appropriate next step. Do not retain a large dormant form or purchase panel solely to fill the layout.
+- **Error:** Preserve useful context and safe existing data, explain the impact, and offer a real retry or recovery path when supported.
+- **Populated:** Prioritize real content and controls. Pagination, scrolling, and dense repetition should serve the task.
+- **Permission-limited:** Show only information and actions appropriate to the verified role. Client-side hiding does not replace server authorization.
+
+A page-level empty state can be more spacious than an inline one. A meaningful stable workspace may keep its structure between states. Apply compactness to the context, not mechanically to every blank area.
 
-# Compatibility and Tooling
+Never replace unknown or failed data with misleading values such as zero, an unlimited allowance, a paid status, or fabricated records.
 
-- Do not assume Next.js. Detect the framework and follow its conventions. For a new project with no preference, Next.js App Router is an acceptable default.
-- Do not assume shadcn/ui, `components/ui/*`, `components.json`, or a particular shadcn style is installed. Reuse the existing setup. If shadcn/ui is absent and appropriate, initialize it before importing components. Do not overwrite an existing style.
-- Detect the package manager from the lockfile. Only default to pnpm when no lockfile or user preference exists.
-- Install all required third-party packages before writing imports. Batch related installations when possible.
-- Prefer existing dependencies and utilities over adding near-duplicates.
-- If an environment provides a dedicated shadcn skill or component documentation, consult it for the installed style and version.
-- There is no assumed image-generation or inspiration tool. Use supplied assets when available. Otherwise use a clearly marked local placeholder only when the design genuinely requires an image slot.
+## 7. UI Copy and Information Boundaries
 
-# Assets
+For each visible string, ask: **Does this audience need this information here to understand a state, make a decision, complete a task, or recover from a problem?** If not, omit it or move it to an appropriate authorized diagnostics/documentation surface.
 
-When the user supplies an image, logo, font, or other asset:
+### Separate product copy from implementation notes
 
-- Copy or save it into the project under a stable local path.
-- Reference the local asset rather than an ephemeral upload or third-party hotlink, unless the user explicitly asks otherwise.
-- Preserve aspect ratio and use the correct object-fit behavior.
-- Add meaningful alt text unless the asset is decorative or repetitive for assistive technology.
-- Do not use an image merely to occupy space in dashboards, settings, tables, billing pages, or developer tools.
-- Do not create decorative blobs, meaningless gradients, faux 3D objects, or hand-drawn complex SVG illustrations as filler.
-- Never use emoji as interface icons.
+- Product UI contains real labels, useful instructions, relevant status, and actionable feedback.
+- Source comments, development notes, tool explanations, and delivery caveats belong in their appropriate development channels, not in ordinary product panels.
+- Do not render framework names, component names, database schema, server environment variables, file paths, stack traces, or implementation TODOs unless they are intentionally relevant to that product screen and authorized audience.
+- Do not expose raw exception messages, serialized error objects, request dumps, or backend responses as user-facing copy. Map expected errors to reviewed messages; use a safe fallback for unknown failures.
+- Keep secrets and sensitive operational data out of public UI and client-visible debug output. Redact diagnostics and minimize logged personal data.
+- A safe support reference can be shown when it helps resolution. Detailed diagnostics require an intentional audience, suitable authorization, and redaction.
 
-# Information Density and Spatial Efficiency
+Do not implement a blanket ban on technical vocabulary. Model names, endpoints, rate limits, API keys, and request identifiers may be core product information in a developer console. Distinguish user-owned configuration from unrelated server internals.
 
-## Utility UI Defaults
+### Write for the actual state and role
 
-For dashboards, consoles, billing, settings, CRUD, monitoring, and data-heavy interfaces:
+- Prefer a specific status and next step over repeated descriptions of what the page already obviously does.
+- Do not show setup instructions for administrators to ordinary users. Offer an administrator a configuration action only when that role and destination actually exist.
+- Do not invent working buttons, support channels, links, or recovery capabilities. A clear informational state is better than a dead action.
+- Do not silently remove meaningful limitations to make a screenshot cleaner.
+- Never misrepresent a prototype, placeholder, payment flow, authentication flow, or demo data as production functionality. Use an intentional demo disclosure when needed and describe unresolved integration work in the delivery report.
+- Keep UI language consistent with the user's request; retain technical identifiers in their appropriate form.
 
-- Use the available desktop width instead of placing the entire app inside a narrow reading container.
-- The main region must be `min-w-0` and able to consume remaining space beside navigation.
-- Use responsive gutter utilities from the project scale, typically resembling `px-4 sm:px-6 lg:px-8`, unless the existing system specifies otherwise. Treat the familiar 16/24/32 CSS-pixel equivalents only as visual references, not as a reason to emit arbitrary pixel values.
-- Use the project spacing scale for section gaps and card padding, typically resembling `gap-4` to `gap-6` and `p-4` to `p-6`, with responsive variants only when the density actually changes.
-- Prefer content-driven height. Avoid fixed height and `min-h-*` on ordinary cards.
-- Do not use `h-screen`, `min-h-screen`, or large viewport-relative heights on inner content panels merely to fill the screen.
-- Do not make a card taller than its information requires. A card containing only an icon, title, and one or two lines of copy should normally be compact rather than several hundred pixels tall.
-- Empty states inside a section should usually use compact vertical padding, not a full-page presentation. Reserve large centered empty states for pages whose entire purpose is unavailable.
-- Avoid multiple layers of card-within-card containers. Use a section heading, grid, separator, or subtle background when another border is not adding meaning.
-- Do not create blank columns, ornamental spacer rows, or placeholder panels.
-- Keep the page title and primary actions close enough to the first content section to read as one task context.
+## 8. Color, Surfaces, Assets, and Character
 
-At a typical 1440 × 900 desktop viewport, a utility page should normally show the page heading, its primary summary or controls, and at least the beginning of the next meaningful section. If additional content exists but the first viewport is mostly blank, reduce heights and spacing.
+- Use a small set of color roles: usually one primary, a neutral surface/text system, and limited accents. Define concrete token values in the brief or theme.
+- Treat a 3–5-color target as palette discipline, not an exact count of every rendered shade. Semantic success, warning, error, focus, disabled, and chart colors may require additional tokens.
+- Choose colors from the brief and brand, not a universal favorite or prohibition. Prefer solid surfaces by default; use gradients only when they have an intentional role in the requested direction.
+- Define semantic background/foreground pairs. When changing a surface, check its text, icons, borders, focus state, and disabled treatment together.
+- Do not achieve quiet styling by making essential text too faint. Check contrast against the actual rendered background.
+- Use a small radius and elevation system. Do not put every heading, sentence, and row inside its own bordered card.
+- Keep purposeful whitespace and distinctive typography where appropriate. Avoid decorative blobs, fake charts, arbitrary illustrations, or oversized icon circles as filler.
+- Use the project's coherent icon family when available. Define shared icon sizes and stroke treatment; do not substitute emojis for interface icons.
 
-## Width by Page Type
+### Assets and fonts
 
-- Utility and data pages: use a wide fluid container, usually up to roughly 1440–1600px after the sidebar, or follow the existing product shell.
-- Forms and settings detail pages: use a focused width, commonly around 640–960px depending on field complexity.
-- Reading content: control line length rather than stretching paragraphs across the viewport.
-- Marketing pages: width and whitespace may be more expressive, but every large area must support hierarchy, imagery, or conversion.
+- Use provided or otherwise authorized assets. Save provided assets locally and reference local paths when appropriate to the project and user request.
+- Do not invent asset URLs or assume image-generation, asset-search, or platform-specific tools exist. Use only capabilities actually available and authorized.
+- Missing imagery does not automatically require a placeholder. Omit nonessential decoration; use an explicitly provisional local placeholder only when the design requires that slot.
+- Provide meaningful alt text for informative images and empty alt text for decorative images. Alt text is user-facing content, not a place for developer TODOs.
+- Use established libraries and real data for maps or complex geographic visuals. Do not fabricate geographic paths or data. Reuse the project's charting approach; do not install chart libraries for a screen without charts.
+- Prefer existing/self-hosted font support when practical. Do not assume Latin-only assets cover the UI's language or that a remote font will always load.
 
-Arbitrary Tailwind values are allowed for deliberate system constants such as a measured sidebar width, chart height, or product container width. Do not use arbitrary values for ordinary spacing that already exists on the Tailwind scale.
+## 9. Environment-Aware Implementation
 
-## Spacing Rhythm
+This skill does not imply any particular tool, framework, component library, or dependency is installed.
 
-Use the existing spacing tokens. When no product scale exists, Tailwind's rem-based spacing utilities are the default implementation vocabulary. A typical utility rhythm is:
+### Respect scope and compatibility
 
-- Inline icon/text gap: `gap-2`.
-- Tight related-content gap: `gap-2` to `gap-3`.
-- Card-internal groups: `gap-3` to `gap-4`.
-- Card padding: `p-4` to `p-6`.
-- Grid gap: `gap-4` to `gap-6`.
-- Section gap: `gap-6` to `gap-8`.
-- Page top and bottom padding: `py-6` to `py-8`.
+- When inspection is allowed, read the minimum relevant manifests, framework versions, theme definitions, components, and parent layouts. Expand only to resolve a concrete dependency or uncertainty; do not read every search match indiscriminately.
+- When inspection is prohibited, work from the authorized materials and explicit contract. Do not infer unseen implementations or claim repository compatibility was verified.
+- Reuse the established framework and design system unless changing them is part of the task. Do not migrate a project just to follow this skill.
+- For a brand-new React project with no specified preference or constraints, Next.js App Router is a default, not a requirement for every interface.
+- Follow the installed versions of React, Next.js, Tailwind, and other packages. Do not assume version-specific hooks, directives, caching APIs, configuration files, or migration rules from this skill.
+- If API behavior is uncertain, consult version-matched official documentation when external research is permitted. Do not guess or silently upgrade dependencies.
 
-Use breakpoint variants such as `sm:`, `md:`, and `lg:` when the layout density truly changes. Do not add responsive modifiers mechanically to every spacing class.
+### Components and packages
 
-Padding and `gap` are allowed on the same container: padding controls the container edge; gap controls spacing between children. Prefer `gap` over child margins for repeated sibling spacing. Avoid `space-*` when a responsive grid or explicit gap is clearer.
+- Do not assume `components/ui`, shadcn/ui, or a specific shadcn style is present. Use existing components when available; add missing ones only when needed and authorized.
+- If choosing shadcn/ui for a new project without another style direction, `new-york` is a starting option, not an instruction to overwrite an established theme.
+- Use the repository's package manager and lockfile; otherwise default to pnpm. Install necessary new dependencies before adding imports, batching related installations where appropriate.
+- If installation or execution is unavailable, report the limitation. Do not pretend imports were resolved or packages were installed.
+- Split meaningful component responsibilities, especially repeated geometry and state variants. Avoid both a monolithic page and needless abstraction for every text node.
 
-# Grid, Alignment, and Equal Sizing
+### Styling and application behavior
 
-## Choose the Layout Primitive by Geometry
+- Use semantic tokens for typography, spacing, colors, radii, and relevant dimensions. Prefer the project's spacing utilities over arbitrary repeated values.
+- Use rem/em and flexible tracks for text-oriented geometry. Fixed icon/control dimensions can be intentional; fixed large information-panel heights require a reason.
+- Implement tokens using the installed Tailwind/CSS setup rather than assuming a particular configuration generation. Make the root document background agree with the app surface where controllable.
+- Use responsive changes where content needs them. Reflow peer columns and actions before they collide; do not simply shrink the whole interface.
+- Use semantic HTML, appropriate native controls, accessible names, visible focus, keyboard operation, and properly associated labels/errors. Prefer native semantics over unnecessary ARIA.
+- Size interaction targets deliberately: typically 36–44px high for desktop controls and about 44px or larger for touch-oriented controls. These are design defaults, not a claim of accessibility conformance.
+- Preserve zoom, readable reflow, and reduced-motion preferences. For inherently two-dimensional content, use deliberate local scrolling rather than accidental page-wide overflow.
+- Escape JSX text where syntax requires it. Do not inject untrusted HTML. Keep document titles and metadata appropriate to the application.
+- Follow the framework's established data-loading and state-management approach. Prefer its loader/server mechanisms or an existing query library; do not force SWR into every project.
+- Do not add a backend, database, authentication system, ORM, or unrelated infrastructure just to perform a visual redesign.
+- When real persistence or authentication is in scope, use the actual backend contract and server-enforced authorization. Do not substitute fake authentication or browser storage for production account data.
+- Keep session credentials out of localStorage. Preserve applicable safeguards such as secure session cookies, server validation, parameterized queries, and database access policies. Do not implement custom password cryptography.
+- Avoid logging whole user objects, credentials, or request bodies. Remove temporary debug instrumentation and development-only UI before delivery.
 
-- Use Flexbox for one-dimensional rows or columns: toolbars, icon-label groups, button rows, and simple stacks.
-- Use CSS Grid for repeated cards, aligned dashboard regions, forms with shared columns, and any layout that needs two-dimensional alignment.
-- Do not default to `justify-between`; it often creates accidental large gaps. Use it only when two semantic groups must anchor opposite edges.
-- Do not use absolute positioning for normal document layout. Reserve it for overlays, badges, anchored controls, and intentional layered media.
-- Every flex or grid child that may shrink should receive `min-w-0` when needed.
+## 10. Verification and Release Gate
 
-## Shared Grid Rules
+Implement the real information hierarchy and relevant states before polishing decoration. Then inspect, identify specific defects, correct them, and inspect the affected result again.
 
-- Major left and right edges should align to the page grid.
-- Section headings, cards, tables, and action rows should share consistent gutters.
-- Repeated siblings must be generated from the same component or shared class recipe whenever possible.
-- Parallel cards should share border, radius, padding, header structure, icon box, title style, and action placement.
-- Use equal columns and `items-stretch` for genuinely parallel cards. Let the grid establish equal height; do not add large arbitrary minimum heights.
-- When repeated cards contain different amounts of text, keep headers aligned and place trailing actions with a flex column and `mt-auto` rather than changing card geometry randomly.
-- Do not force equal height between unrelated sections with substantially different information weight.
-- A deliberate asymmetric layout is allowed only when hierarchy requires it; the asymmetry must be obvious and stable across breakpoints.
+### Visual inspection
 
-## Vertical Alignment Rules
+When browser/rendering tools are available:
 
-- Icon plus one-line label: use a fixed icon box and `items-center`.
-- Icon plus multi-line text: use a fixed icon box and usually `items-start`, aligned to the first text line.
-- Controls in the same row must use the same visual height, normally `h-9` or `h-10` in desktop utility UI.
-- On touch layouts, preserve a target size around 44px even when the visible control is smaller.
-- Card headers in the same row should have the same internal structure and comparable minimum height only when needed for alignment.
-- Align text labels by baseline where appropriate. Use `tabular-nums` for balances, metrics, dates, counters, and aligned numeric columns.
-- Left-align text columns, right-align comparable numeric columns, and place row actions consistently.
-- Do not vertically center a large blank area around a small message when top-aligned compact content would be more efficient.
+1. Choose a representative desktop viewport, such as 1440×900, and a narrow viewport, such as 390×844. Add a mid-width or wider workspace view when the layout calls for it. These are test fixtures, not required product dimensions.
+2. Inspect the actual rendered page with its fonts loaded. Check at normal scale rather than relying only on a reduced thumbnail. Inspect fallback behavior when fonts are external.
+3. Exercise the relevant populated, empty, unavailable, loading, error, and long-content states. Use real data or explicitly isolated test fixtures; do not leak fixtures into production.
+4. Compare related controls and panels. Check shared edges, equal intended dimensions, text baselines, icon centering, wrapping, and action alignment.
+5. Inspect vertical allocation: does each large region earn its height? Are summaries or empty panels delaying the primary content without benefit?
+6. Check keyboard focus, readable zoom/reflow, and overflow. Treat 200% zoom as a useful test condition, not proof of complete accessibility compliance.
+7. Read every visible string as the intended user. Review raw-error paths, placeholder text, internal notes, misleading defaults, and role-inappropriate instructions.
 
-## Reusable Layout Patterns
+When DOM measurements are available, turn intended equalities into checks. Compare the relevant border boxes or shared edges within about 1 CSS pixel of rounding tolerance. Equal size is a check only for components intended to match; optical glyph alignment still needs visual inspection.
 
-A wide application shell should resemble:
+When rendering is unavailable, review the layout rules, tokens, responsive behavior, and state branches statically. Explicitly report that visual verification was not performed. Do not claim that the UI is centered, pixel-perfect, or fully responsive based only on code inspection.
 
-```tsx
-<main className="min-w-0 flex-1">
-  <div className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
-    {/* page content */}
-  </div>
-</main>
-```
+### Block release or explicitly report the unresolved defect when
 
-A repeated card grid should resemble:
+- Essential content is unreadable, clipped, or lost through unintentional overflow.
+- Like-for-like peers have unexplained size, inset, baseline, or control-height mismatches.
+- Utility panels have large unexplained blank regions or empty states retain unjustified populated-state dimensions.
+- Internal details, raw errors, secrets, developer notes, or misleading data appear in ordinary product UI.
+- A visible action is broken, invented, or presented as working without its required integration.
+- The claimed verification did not happen.
 
-```tsx
-<div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-  {items.map((item) => (
-    <SummaryCard key={item.id} className="h-full min-w-0" {...item} />
-  ))}
-</div>
-```
+Do not fix these problems by blindly reducing all spacing, enlarging all text, hiding essential information, or adding filler. Correct the underlying relationship: content, state, type role, shared geometry, or audience boundary.
 
-Use these as geometry patterns, not mandatory copy-paste templates. Follow an existing product shell when one exists.
-
-# Typography
-
-## Use Semantic, Relative Type Tokens
-
-Typography requirements describe hierarchy and rendered intent, not literal pixel declarations. Do not implement a type scale with repeated `font-size: 14px` rules or arbitrary classes such as `text-[14px]` when the project already has suitable typography utilities.
-
-Use this order of preference:
-
-1. Reuse the project's existing semantic typography component, token, or class.
-2. Reuse the installed Tailwind scale, such as `text-sm`, `text-base`, `text-lg`, `text-xl`, `text-2xl`, and responsive variants.
-3. When the project needs a custom type scale, define named theme tokens in relative units, normally `rem`, and consume those tokens consistently. Follow the installed Tailwind version's configuration method.
-4. Use an arbitrary value only for an intentional one-off or fluid display treatment that cannot be expressed by the project scale. Prefer relative values such as `rem` or a bounded `clamp(...)`, not raw pixel values.
-
-Keep the root font size at the browser/user default, normally `100%`. Do not set `html { font-size: 62.5% }` merely to make rem arithmetic resemble decimal pixels.
-
-Use `rem` as the default unit for the global type hierarchy because it is relative to the root and does not compound through nested components. Use `em` for deliberately component-relative details, such as an icon, badge, or inset that should scale with that component's local text. Do not build the primary font-size hierarchy from nested `em` values because they can compound unpredictably.
-
-## Responsive Type Hierarchy
-
-Responsive typography does not mean every text role must change at every breakpoint. Reflow layout before shrinking text. Body copy, controls, navigation, and table text should usually remain on one legible token across viewports. Use breakpoint or container variants when a heading, metric, or display element genuinely needs a stronger hierarchy at wider sizes.
-
-A suitable utility-page starting point, subject to the existing design system, is:
-
-- Page title: `text-2xl sm:text-3xl` with a tight heading line-height.
-- Section title: `text-lg sm:text-xl`.
-- Card title: `text-base` or `text-lg` according to information weight.
-- Body, labels, buttons, navigation, table cells, and actionable help: normally `text-sm` or `text-base`; do not reduce them merely to fit more content.
-- Secondary metadata and captions: `text-xs` only when genuinely nonessential and sufficiently contrasted.
-- Key numeric values: commonly `text-3xl sm:text-4xl`; increase further only when the metric is the clear page focus and the surrounding density remains balanced.
-
-These classes are defaults, not a second hard-coded design system. If the repository maps them differently or provides role-based classes such as `text-page-title`, `text-card-title`, or `text-ui-label`, use those instead.
-
-For a marketing display heading or another element that should scale continuously with its available width, a bounded relative expression is acceptable, for example:
-
-```tsx
-<h1 className="text-[clamp(2rem,1.4rem+2.5vw,4.5rem)] leading-[1.05]">
-  {/* display heading */}
-</h1>
-```
-
-Do not apply viewport-fluid sizing to routine dashboard text. It can cause unstable wrapping, inconsistent card heights, and weak alignment across neighboring components. When a reusable component's typography depends on its own width rather than the viewport, prefer container-aware variants when the existing stack supports them.
-
-Never use tiny text to make a sparse layout appear sophisticated. The acceptance test is role-based: primary information must use a body/control token or stronger; metadata tokens must not carry essential actions or meaning.
-
-## Font Rules
-
-- Use at most two font families, but default to one coherent sans-serif family for dashboards and product UI.
-- Do not introduce a serif display face in an admin, billing, settings, or developer console unless the brand or reference explicitly calls for it.
-- Use a monospace family only for code, identifiers, logs, or data where fixed-width glyphs add meaning.
-- Ensure the selected family covers the interface language. For Chinese interfaces, use a CJK-capable family or a deliberate system fallback such as `"PingFang SC"`, `"Microsoft YaHei"`, `"Noto Sans CJK SC"`, sans-serif.
-- Avoid loading a Latin-only heading font that causes Chinese text to fall back to a visually unrelated face.
-- Prefer weights 400, 500, 600, and 700. Do not rely on many near-identical weights.
-- Use line-height around 1.35–1.5 for compact UI and 1.5–1.7 for longer reading text.
-- Use `text-balance` for short headings and `text-pretty` for longer copy when supported.
-- Keep muted text readable; do not use low contrast as a substitute for hierarchy.
-
-# Color and Theme
-
-- Define a small core palette: one brand family, neutral surfaces/text, and one optional accent. Semantic success, warning, destructive, and informational colors are exempt when genuinely needed.
-- Respect an existing brand palette before inventing another.
-- Do not default to purple, violet, or gradients merely because they look “AI-generated.” Use them only when the brand, user, or reference supports them.
-- Prefer solid surfaces. Use gradients sparingly and only with a functional or brand purpose.
-- Use semantic tokens such as `background`, `foreground`, `card`, `muted`, `border`, `primary`, and `destructive` rather than scattering raw colors.
-- When overriding a background, explicitly verify the foreground, icon, border, hover, focus, disabled, and selected-state contrast.
-- Direct colors are acceptable only for external brand marks, charts with documented series colors, or one-off assets that cannot be represented by semantic tokens.
-- Add the background token to the root HTML element so overscroll and browser chrome do not reveal an unintended color.
-
-# Cards, Sections, and Surfaces
-
-- A card must represent a meaningful grouped object, state, action, or dataset. Do not turn every paragraph into a card.
-- Prefer one surface hierarchy per region. Avoid border-on-border nesting and excessive shadows.
-- Keep radius, border color, and elevation consistent among peers.
-- Use separators or spacing when a full card boundary is unnecessary.
-- A split card should have balanced information on both sides. If one side is only a small empty state, consider two compact cards or a different composition instead of a large 50/50 panel.
-- Do not make decorative backgrounds materially larger than their content.
-- Place the primary action near the state it changes.
-- Use empty-state illustrations only when they add comprehension or brand value; a concise icon, message, and action is usually better in utility UI.
-
-# Forms and Controls
-
-- Use the project's field, form, validation, button, and input primitives.
-- Keep label, control, help, and error alignment consistent across the form.
-- Use one control height per density preset. Do not mix `h-8`, `h-9`, `h-10`, and custom heights in the same toolbar without a clear reason.
-- Labels and error text must remain legible. Do not use captions as primary labels.
-- Required, optional, disabled, read-only, loading, and destructive states must be unambiguous.
-- Keep primary and secondary actions visually distinct. Avoid multiple equally prominent primary buttons.
-- Do not place a destructive action next to a primary action without spacing, hierarchy, and confirmation appropriate to risk.
-- Use input groups, button groups, fields, and item components when they reduce custom alignment code and match the installed shadcn style.
-
-# Tables, Charts, and Data Display
-
-- Tables should favor scanability: aligned headers, predictable row height, restrained borders, stable actions, and readable density.
-- Use horizontal scrolling, column prioritization, or an alternate mobile representation rather than shrinking text below legibility.
-- Use `tabular-nums` and consistent decimal/units formatting for numeric comparisons.
-- Charts should use an established chart library and the project's chart primitives when available.
-- Give charts a deliberate height based on their purpose, usually around 240–360px in dashboard cards, rather than inheriting an arbitrary full-screen height.
-- Do not render an empty chart frame when no data exists. Show a compact, actionable empty state.
-- Legends, axes, tooltips, and colors must remain readable in light and dark themes.
-- Do not add chart series or metrics that the available data does not support.
-
-# User-Facing Copy and Technical Detail Boundary
-
-Every visible string must pass this test: “Can the intended user understand this, and does it help them decide or act?” If not, rewrite it or remove it.
-
-## Allowed by Default
-
-- Product and domain terminology already used by the user or project.
-- Clear account, billing, permission, validation, loading, empty, and error states.
-- Actionable next steps.
-- Provider names only when the user must recognize or choose that provider.
-
-## Forbidden in Ordinary UI
-
-- Framework, library, package, component, hook, or database names.
-- Environment variable names, secret names, configuration keys, internal feature flags, and raw enum values.
-- File paths, source locations, API paths, HTTP method/debug text, SQL, table names, and schema fields.
-- Stack traces, raw exceptions, status dumps, serialized objects, internal IDs, tokens, and request identifiers.
-- “TODO,” “mock,” “placeholder,” “not implemented,” “debug,” or comments accidentally rendered as product copy.
-- Internal architecture explanations such as cache strategy, queue state, webhook configuration, or storage implementation unless the screen is explicitly a permission-gated technical diagnostics surface.
-
-## Error Mapping
-
-Keep technical details in logs and map them to safe, actionable UI messages.
-
-Bad:
-
-```text
-STRIPE_SECRET_KEY is missing
-GET /api/billing returned 500
-Prisma P2025: record not found
-```
-
-Good:
-
-```text
-暂时无法充值，请稍后重试或联系管理员。
-账单加载失败，请重试。
-未找到该记录，它可能已被删除。
-```
-
-Do not reveal a guessed root cause. If the cause is unknown, say the action failed and provide a safe next step.
-
-# Responsive Behavior
-
-Mobile-first does not mean stretching a one-column mobile design across desktop.
-
-- Design each major breakpoint deliberately.
-- Mobile: one primary column, readable text, compact section spacing, touch-safe controls, and no accidental horizontal page scroll.
-- Tablet: introduce columns only when each column remains useful and readable.
-- Desktop: use the available width, align repeated regions to a stable grid, and keep toolbars and data views efficient.
-- Sidebars should collapse, become a sheet, or use the project's established responsive behavior rather than squeezing the main content.
-- Do not hide essential actions only because the viewport is narrow. Reorder, group, or move them into an accessible menu.
-- Test long Chinese and English labels, large currency values, zero states, and localization expansion.
-- Use responsive typography sparingly. Do not make every text size change at every breakpoint.
-- Prevent cumulative layout shift by reserving space for media, charts, and asynchronous content when needed.
-
-# Tailwind Implementation
-
-- Prefer semantic tokens and existing component variants.
-- Prefer the Tailwind spacing scale for normal spacing.
-- Use `gap-*` for sibling spacing and padding for container edges; using both on one element is valid.
-- Avoid child margins when a parent gap can express the relationship.
-- Use `min-w-0`, `overflow-hidden`, `truncate`, or wrapping intentionally rather than allowing accidental overflow.
-- Do not overuse `overflow-hidden` to conceal layout bugs or clipped focus rings.
-- Use responsive prefixes based on actual layout changes, not mechanically on every class.
-- Use `cn()` or the project's class-merging utility for conditional classes.
-- Avoid long, duplicated class strings across repeated components; create variants or shared components.
-- Absolute positioning, negative margins, and arbitrary values require a clear layout reason.
-- Do not solve alignment with unrelated one-off nudges such as inconsistent `mt-[3px]` values across peers.
-
-# shadcn/ui
-
-- Reuse components already present in `components/ui/*`.
-- Add only missing components that the task genuinely needs.
-- Respect the installed shadcn style, radius, tokens, and component anatomy.
-- Use Card, Field, Item, Empty, InputGroup, ButtonGroup, Tabs, Table, Dialog, Sheet, DropdownMenu, Tooltip, Skeleton, and chart primitives when they fit, rather than rebuilding equivalent behavior without reason.
-- Do not wrap every shadcn component in another bordered container.
-- Standardize card header/content padding through shared variants when a page uses many cards.
-- Keep icon sizes consistent, normally 16px in compact controls, 20px in common controls, and 24px in larger state icons.
-- Icon-only controls require an accessible name and tooltip where the meaning is not obvious.
-
-# React and Data Architecture
-
-- Follow the project's existing server/client boundary and data-fetching library. Do not force SWR, TanStack Query, or another library into a project that already has a sound pattern.
-- Prefer server-provided data when supported and appropriate.
-- Do not fetch data in `useEffect` when a framework data API or established query library provides lifecycle, caching, cancellation, and error handling.
-- Keep UI state local unless it must be shared. Do not create global state for convenience alone.
-- Split components by stable responsibility and reuse, not merely to reduce line count.
-- Do not place an entire complex page in one component, but also do not fragment every small wrapper into a separate file.
-- Use semantic HTML such as `main`, `header`, `nav`, `section`, `form`, and `table` where appropriate.
-- Keep metadata, document title, viewport, and theme color consistent with the page and framework.
-- Escape syntax-sensitive JSX content correctly. Ordinary apostrophes in JSX text do not require unnecessary transformations unless the project's lint rules demand it.
-
-# Persistence and Security
-
-- Durable user and business data must use the project's real backend storage, not client-only state.
-- `localStorage` may be used for non-sensitive local preferences, dismissals, or recoverable drafts when appropriate. It must not be the source of truth for accounts, billing, permissions, or durable records.
-- Never store passwords, session tokens, secrets, or privileged data in localStorage.
-- Use secure HTTP-only cookies or the project's established secure session mechanism.
-- Validate and sanitize untrusted input on the server.
-- Use parameterized database queries and the project's authorization model.
-- Apply row-level or equivalent authorization controls where supported.
-- Do not implement fake authentication for a production feature.
-- Do not expose secrets, privileged fields, or raw backend objects to the client merely because the UI does not display them.
-- Use a real database for durable data and cache/queue systems only for their intended ephemeral roles.
-
-# Debugging and Errors
-
-- Use consistent, descriptive debug logs while diagnosing a problem.
-- Do not log secrets, tokens, passwords, full payment details, or sensitive personal data.
-- Remove temporary debug logging after the issue is resolved.
-- Never render debug logs, raw errors, stack traces, serialized state, or developer notes into normal product UI.
-- Separate `displayMessage` from technical error details. The user sees the former; logs and diagnostics receive the latter.
-- An explicitly requested diagnostics page must be permission-gated, redact secrets, and clearly distinguish user-safe status from raw technical evidence.
-
-# Accessibility
-
-- All interactive elements must be keyboard reachable and show a visible focus state.
-- Use native semantics before ARIA. Add ARIA only when native HTML is insufficient.
-- Icon-only buttons require accessible labels.
-- Form controls require labels, descriptions, and error associations.
-- Do not communicate status by color alone.
-- Maintain sufficient contrast in normal, muted, disabled, hover, selected, and focus states.
-- Respect reduced-motion preferences and avoid motion that blocks task completion.
-- Use `sr-only` text where a visual label is intentionally omitted.
-- Preserve a touch target around 44 × 44px on touch interfaces, even if the visual glyph is smaller.
-
-# Visual QA Checklist
-
-Before completion, inspect the rendered page and answer all of these internally:
-
-## Density
-
-- Is this the correct density for the page type?
-- Is any card or section taller than its content requires?
-- Is the first desktop viewport mostly useful content rather than empty surface?
-- Are page gutters, section gaps, and card padding consistent?
-- Has a full-page empty state been used where a compact section state would be better?
-
-## Alignment
-
-- Do major left and right edges align?
-- Do repeated cards share dimensions and internal geometry?
-- Are icon boxes, labels, controls, and actions vertically aligned?
-- Are numeric columns and values consistently aligned?
-- Does any `justify-between`, fixed height, or absolute position create an accidental gap?
-
-## Typography
-
-- Does every essential label and action use the project's legible body/control token or a stronger semantic type role?
-- Can the hierarchy be understood at a glance?
-- Are Chinese and Latin glyphs visually coherent?
-- Are muted text and disabled states still readable?
-- Are display numbers large enough to scan but not so large that they waste the card?
-
-## Content Safety
-
-- Does every visible string belong to the product domain?
-- Are raw errors and internal implementation details absent?
-- Are empty and error messages truthful and actionable?
-- Has any placeholder, debug, mock, or TODO text leaked into the UI?
-
-## Responsiveness and Accessibility
-
-- Is there horizontal overflow?
-- Do controls remain reachable and readable on mobile?
-- Do long labels and values wrap or truncate intentionally?
-- Are focus states visible and icon-only controls labeled?
-- Do loading, empty, error, and populated states preserve stable geometry?
-
-If any answer is unsatisfactory, revise and re-check.
-
-# Clone and Reference Work
-
-When the user requests a clone or supplies a reference:
-
-- Study the source carefully, including spacing, proportions, responsive behavior, typography, states, and interaction patterns.
-- Reproduce the visual hierarchy and geometry, not just the colors.
-- Preserve the user's supplied content and assets where requested.
-- Do not add unrelated sections, fake data, or technical labels to make the clone appear more complete.
-- Never create phishing, credential harvesting, impersonation, or other malicious interfaces.
-
-# Final Principle
-
-Utility interfaces should feel compact, calm, aligned, and immediately usable. Marketing interfaces may be expressive, but no interface should trade clarity for empty space or novelty. Character should come from typography, rhythm, proportion, states, and detail—not from giant blank cards, tiny text, arbitrary misalignment, or leaked implementation language.
+Finish with a brief delivery summary of the substantive changes, checks actually performed, and unresolved limitations. Keep implementation commentary out of the product itself.
