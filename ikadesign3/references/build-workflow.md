@@ -4,7 +4,7 @@
 
 Use `design.md` to build real pages that support the reader tasks. A consistent brand does not require a consistent layout. Different pages can use different structures. But they must share the applicable visual rules and primitives.
 
-Do not create an additional theme system. Do not install components that the current task does not need. Do not deploy, commit, push, or access external services without user permission.
+Do not create an additional theme system. Do not install components that the current task does not need.
 
 This workflow is the Build mode of the `ikadesign3` skill. [Review and Rule Update](review-loop.md) defines the review record, mechanical checks, issue classes, and stop rule.
 
