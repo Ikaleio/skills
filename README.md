@@ -11,7 +11,7 @@
 | `agent-browser` | 通过命令行自动操作浏览器和 Electron 应用。 |
 | `grill-me` | 逐项追问并检验计划或设计中的决策。 |
 | `image-to-code` | 先生成和分析设计图，再实现视觉要求较高的网站。 |
-| `ikadesign2` | 从现有产品提取、按品牌要求创建或按 design.md 实现设计系统，并在同一闭环中检查和回写规则。 |
+| `ikadesign3` | 从现有产品提取、按品牌要求创建或按 design.md 实现设计系统，并在同一闭环中检查和回写规则。design.md 只描述 UI 呈现，不描述产品功能。 |
 | `notion-spec-to-implementation` | 把 Notion 规格转换为实施计划、任务和进度记录。 |
 | `shadcn` | 管理、检索、调试和组合 shadcn/ui 组件。 |
 | `ste-writing` | 用受控技术写作规则编写或审查技术文本。 |
