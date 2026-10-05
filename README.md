@@ -1,34 +1,37 @@
-# Codex Skills
+# Skills
 
-本仓库保存 Ikaleio 使用的用户级全局 skills。当前内容同步自本机的非系统 skill 目录，快照日期为 2026-08-28。
-
-仓库不包含 Codex 内置的 `.system` skills，也不包含插件缓存。
+Ikaleio 自用的 Agent skills。每个顶层目录是一个 skill，入口文件是该目录下的 `SKILL.md`。
 
 ## Skills
 
 | 名称 | 用途 |
 | --- | --- |
-| `agent-browser` | 通过命令行自动操作浏览器和 Electron 应用。 |
-| `grill-me` | 逐项追问并检验计划或设计中的决策。 |
-| `image-to-code` | 先生成和分析设计图，再实现视觉要求较高的网站。 |
-| `ikadesign3` | 从现有产品提取、按品牌要求创建或按 design.md 实现设计系统，并在同一闭环中检查和回写规则。design.md 只描述 UI 呈现，不描述产品功能。 |
-| `notion-spec-to-implementation` | 把 Notion 规格转换为实施计划、任务和进度记录。 |
-| `shadcn` | 管理、检索、调试和组合 shadcn/ui 组件。 |
-| `ste-writing` | 用受控技术写作规则编写或审查技术文本。 |
-| `v0-design-guidelines` | 在通用 Agent 环境中应用 v0 风格的界面设计规则。 |
+| [`agent-browser`](agent-browser/SKILL.md) | 通过 `agent-browser` CLI 自动操作网页和 Electron 应用。 |
+| [`grill-me`](grill-me/SKILL.md) | 逐项追问计划或设计，直到每个决策分支都有结论。 |
+| [`ikadesign3`](ikadesign3/SKILL.md) | 从现有前端代码、网站或截图提取 design.md，按品牌要求创建 design.md，或按 design.md 实现和审查页面。design.md 只描述 UI 呈现，不描述产品功能。 |
+| [`shadcn`](shadcn/SKILL.md) | 添加、检索、调试、定制和组合 shadcn/ui 组件。 |
+| [`ste-writing`](ste-writing/SKILL.md) | 按 ASD-STE100 派生的受控规则编写、改写或审查技术文本。 |
+
+`agent-browser` 需要先安装 CLI：
+
+```bash
+npm i -g agent-browser && agent-browser install
+```
 
 ## 安装
 
-[skills CLI](https://www.skills.sh/docs/cli) 可以直接从 GitHub 安装本仓库中的 skills。使用 Bun 将需要的 skills 安装到 Codex 的用户级全局目录：
+### Codex 和 Claude Code
+
+用 [skills CLI](https://www.skills.sh/docs/cli) 从 GitHub 安装到用户级全局目录。不带 `--skill` 时，CLI 会让你选择要安装的 skills：
 
 ```bash
-bunx skills add Ikaleio/skills --global --agent codex
+bunx skills add Ikaleio/skills --global --agent codex claude-code
 ```
 
-安装全部 skills，并跳过交互确认：
+安装全部 skills，并跳过确认：
 
 ```bash
-bunx skills add Ikaleio/skills --global --agent codex --skill '*' --yes
+bunx skills add Ikaleio/skills --global --agent codex claude-code --skill '*' --yes
 ```
 
 更新已安装的全局 skills：
@@ -37,6 +40,26 @@ bunx skills add Ikaleio/skills --global --agent codex --skill '*' --yes
 bunx skills update --global
 ```
 
+### omp
+
+skills CLI 不支持 omp。把仓库克隆到 omp 的用户级 skills 目录：
+
+```bash
+git clone https://github.com/Ikaleio/skills ~/.omp/agent/skills
+```
+
+更新：
+
+```bash
+git -C ~/.omp/agent/skills pull
+```
+
+## 添加 skill
+
+1. 新建 `<name>/SKILL.md`。
+2. 在 frontmatter 中写 `name` 和 `description`。`name` 与目录名一致。
+3. 运行 `bunx skills add . --list`，确认 CLI 能识别新 skill。
+
 ## 许可
 
-部分 skill 包含或改编自第三方材料。各文件保留其原有版权说明和许可文件。本仓库不对全部内容授予统一许可。
+部分 skill 包含或改编自第三方材料。本仓库不对全部内容授予统一许可。
