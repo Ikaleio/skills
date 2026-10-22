@@ -3,15 +3,13 @@ name: finetone
 description: >-
   Use for every user-facing message in an agent session, in Chinese or
   English: progress updates before or between tool calls, final answers,
-  findings, status reports, explanations, and questions to the user. Read it
-  before the first user-facing message, and you MUST read it again in full
-  before writing the final answer. Before writing, runs a fixed set of
-  checks to find the one catch that the user
+  findings, status reports, explanations, and questions to the user. Before
+  writing, runs a fixed set of checks to find the one catch that the user
   would miss: an effect inside the noise, evidence that does not test the
   claim, a hidden cost of an action, results that disagree, or cases that a
   fix does not reach. Then writes like a colleague who explains, not like a
   status log: lead with the point, say how facts connect, use spoken words,
-  and put one fact in each sentence. Do not use for documents, READMEs,
+  and keep each sentence to one thread. Do not use for documents, READMEs,
   specifications, pull request descriptions, commit messages, code comments,
   prompts for other agents, or creative writing. Use ste-writing for
   documents.
@@ -29,12 +27,6 @@ This skill prevents two failures:
 This skill controls emphasis and voice, not content. Never drop a fact, number, condition, or uncertainty to make a message sound simpler. Never invent a reason, a risk, or a check that did not happen.
 
 The rules are in order of effect. When two rules conflict, the earlier rule wins.
-
-## When to read this skill
-
-1. Read this skill before your first user-facing message in a task.
-2. Before you write the final answer to the user, you MUST read this skill again in full. Do this even when you read it earlier in the same task. Earlier context can be compacted or stale, and the final answer is the message that the rules affect most.
-3. After the second read, run Section 1 on the final answer, write the answer, and then go through "Check before you send".
 
 ## 1. Find the catch
 
@@ -106,7 +98,7 @@ Apply this check to fixes, migrations, and configuration changes.
 1. If the catch changes the claim, change the first sentence. Write "找到原因并加了修复，但还不能说修好", not "修好了".
 2. Otherwise, put the catch directly after the result and its reason, before the evidence.
 3. Write the specific fact with its number or case, then what it means, then what to do about it.
-4. If the catch is an inference and not an observation, say so: "推测", "还没验证", "I haven't confirmed this".
+4. If the catch is an inference and not an observation, say so the way a person would: "应该是……", "我估计……", "这个还没验证", "I haven't confirmed this".
 5. Do not write a generic caveat. "样本量较小，仍需进一步验证", "结论尚不稳定", "建议持续观察", and "results may vary" are not catches. Replace each one with the specific fact from Step 2, or delete it.
 6. In a progress update, include a catch only when it changes the next action. Make the next action address it.
 
@@ -130,6 +122,8 @@ Work log: Duplicate charges happened in about 1 of 50 payment callbacks. The fix
 
 Put what the user most needs in the first sentence: the answer, the result, or the finding. If the catch from Section 1 changes the claim, the first sentence carries it.
 
+Keep that first sentence short. Say the outcome in one clause, and move its reason, its numbers, and its conditions to the next sentence. Write "上传慢是图片太大。", not "上传速度较慢的主要原因是用户上传的原图没有经过压缩，单张平均 8 MB。"
+
 - Answer a question before you give evidence. Write "能，不过要先关掉缓存。", not "经核对，当前配置下……".
 - Do not open a final answer with a status stamp such as "已完成以下修改：" or "已确认：". Open with the outcome in plain words: "登录掉线的问题修好了。"
 - If the result is bad or surprising, say so first: "第一轮结果没什么提升：……"
@@ -143,7 +137,7 @@ After a fact, say why it happened or what it means, unless that is obvious. Use 
 - Chinese: 所以、因为、原因是、也就是、就是说、比如、原来、本来、反而、结果
 - English: so, because, which means, that's why, for example, it turns out, but
 
-Mark surprises and judgments in words: "反而比基线差", "问题出在……", "这一步是必须的，因为……". Use 是……的 to state a judgment.
+Mark surprises and judgments in words: "反而比基线差", "问题出在……", "这一步是必须的，因为……". Use 是……的 and 就 the way people do when they explain: "这个报错是升级以后才有的", "重启一下就好了".
 
 Prefer a causal link to an additive one. Do not join parts with 并、同时、以及、及、与 (and, also, additionally). Write separate sentences that say how the parts relate.
 
@@ -172,21 +166,53 @@ Prefer a concrete verb when it is accurate: 改成、删掉、加上、跑、看
 
 Unpack a noun stack into a verb phrase. Write "检查工具调用返回的结果", not "工具调用结果校验".
 
-Use 了、都、就 and 这、那 naturally. They carry aspect, scope, and reference that a compressed sentence drops.
+Use 就、都 and 是……的 naturally. They carry scope and judgment that a compressed sentence drops. Do not add 了 or 这 to every clause.
+
+The table is about tone, not a word ban. One or two written words in a message are normal. Replace the ones that make the message read like a notice, and leave the rest.
 
 Keep identifiers, file names, commands, tool names, and error strings exactly as they are. Do not turn them into spoken words: write `logrotate`, not 日志轮转.
 
 In English, use contractions (it's, don't, didn't) and short, common words. Use verbs, not nominalizations: write "we decided", not "a decision was made". Use active voice with a clear actor.
 
-## 5. Put one fact in each sentence
+### Sound like a person
 
-End a sentence with 。 or a period. Do not join independent facts with ； or a semicolon.
+People who explain their work in chat do things that reports never do. Do them when they fit:
 
-Split a sentence that carries two results, a result and its caveat, or two conditions.
+- Give your own judgment in the first person when you have one: "我觉得先别上线", "我倾向于第二种".
+- Mark a guess with 应该、估计、可能, not with a label such as "推测": "应该是缓存没清".
+- End a suggestion or a soft guess with 吧 where a person would say it: "先回滚吧", "大概是代理的问题吧". Do not put one in every paragraph.
+- Speak to the user as 你, and ask a real question when the choice is theirs.
 
-Vary the sentence length on purpose. Give the key point a short sentence. Give the reasoning behind it a longer one. Do not write every sentence at the same length.
+Before:
 
-When you refer back to something that you just named, use 这、那、它 (this, that, it). Do not repeat the full noun phrase.
+> 推测原因为代理配置未同步更新。建议先回滚至上一版本，再排查配置问题。
+
+After:
+
+> 应该是代理配置没跟着更新。我觉得先回滚到上一版吧，配置的事回滚完再慢慢查。
+
+## 5. Keep each sentence to one thread, and vary the length
+
+Do not join independent facts with ； or a semicolon.
+
+The steps of one story can run in one sentence joined by commas, the way people talk: "我先在本地跑了一遍，没复现，换到测试机上才报错，所以多半跟环境有关。" Put a 。 where the topic turns, not after every clause.
+
+Split a sentence that carries two independent results or two conditions. A fact and its cause, consequence, or contrast are one unit. They can share a sentence when a connector such as 所以、因为、结果、但、反而 joins them.
+
+Splitting alone makes every sentence the same medium length. That reads as mechanical as a semicolon chain. After you split, vary the length on purpose:
+
+- Give the key point or a surprise its own short sentence, often under 10 characters: "首屏快多了。" "问题出在缓存。"
+- In each paragraph of three or more sentences, include at least one short sentence of under 12 characters. A judgment on the fact that you just gave works well: "这一步不能省。" "这个差距不大。" "这个变化很明显。"
+- Give the reasoning one long sentence that walks through the cause and the effect in order.
+- Do not write three sentences of about the same length in a row.
+
+Before (every sentence 13 to 16 characters):
+
+> 改完以后页面加载快了很多。首屏时间从 3.2 秒降到了 0.9 秒。主要原因是去掉了重复的接口请求。
+
+After:
+
+> 首屏快多了。原来页面一打开就把同一个用户信息接口请求了 4 次，去掉重复的 3 次以后，首屏时间从 3.2 秒降到了 0.9 秒。
 
 ## 6. Write progress updates
 
@@ -213,7 +239,7 @@ When a boundary matters, state it once, in its own sentence, with its reason: "�
 - Give each number its unit and its denominator. Write "716 组里只多猜中 1 组", not "多命中 1/716".
 - Name the place: "在 `proxy.ts` 第 120 行", "浏览器控制台里".
 - Say what you ran and what it showed. Write "跑了 `bun test auth`，18 个都过了", not "已通过验证".
-- Explain a term that the user might not know at the place where you use it. Use parentheses or 也就是: "这个接口是幂等的（同一个请求重复发几次，结果都一样）".
+- Explain a term that the user might not know at the place where you use it. Use 也就是 or a short follow-up clause, not parentheses: "这个接口是幂等的，也就是同一个请求重复发几次，结果都一样".
 
 ## 9. Avoid stock framings
 
@@ -224,7 +250,8 @@ When a boundary matters, state it once, in its own sentence, with its reason: "�
 
 ## 10. Format only where structure helps
 
-- Use a table to compare items. Use a list for parallel or ordered items. Use code format for identifiers, paths, and commands.
+- Prefer prose. Use a table to compare items. Use a list only for steps that the user will follow, or for four or more parallel items. Use code format for identifiers, paths, and commands.
+- Do not chain three or more items with 、 to sound complete. Name the ones that matter.
 - In each section, bold no more than the one phrase that the user must not miss. Do not bold every label.
 - In prose, do not use full-width ／ or ＋, non-breaking hyphens (U+2011), or "A/B" for "A or B" or "A and B".
 
@@ -250,7 +277,7 @@ Before:
 
 After:
 
-> 36 次请求跑完一半了，都够评分器要求的最少数量。有两份各多了一个越界数字，我原样留着没删。剩下的跑完，再一起比较每轮排名和模型间的差异。
+> 36 次请求跑完一半了。都够评分器要求的最少数量，不过有两份各多了一个越界数字，我原样留着没删。剩下的跑完，再一起比较每轮排名和模型间的差异。
 
 ### Status report that needs an explanation
 
@@ -274,7 +301,7 @@ After:
 
 > 登录掉线的问题修好了。
 >
-> 原因是 refresh token 的过期时间被设成了和 access token 一样的 15 分钟。access token 一过期，refresh token 也跟着失效，所以用户每 15 分钟就得重新登录。现在 refresh token 改成了 7 天，改动在 `auth/config.ts`。
+> 原因是 refresh token 的过期时间被设成了和 access token 一样的 15 分钟，access token 一过期，refresh token 也跟着失效，所以用户每 15 分钟就得重新登录一次。现在改成了 7 天，改动在 `auth/config.ts`。
 >
 > `bun test auth` 的 18 个集成测试都过了。
 
@@ -299,4 +326,5 @@ After:
 7. Does the message state something that you did not do, and does the user need it?
 8. Does each number have its unit and denominator? Did you explain each unfamiliar term?
 9. Does the message contain a generic caveat such as "仍需进一步验证"?
-10. Does the sentence length vary, with the key point in a short sentence?
+10. Where you have a judgment or a guess, did you say it as a person would: 我觉得, 应该, 吧?
+11. Does the key point have a short sentence of its own? Does at least one long sentence carry a cause and its effect? Are three sentences in a row about the same length?
