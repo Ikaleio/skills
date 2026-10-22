@@ -9,7 +9,6 @@ Ikaleio 自用的 Agent skills。每个顶层目录是一个 skill，入口文�
 | [`finetone`](finetone/SKILL.md) | 发消息前按固定流程找出用户最容易漏掉的要害，再用先说结论、讲清因果、口语化的方式写进度和最终回复。 |
 | [`grill-me`](grill-me/SKILL.md) | 逐项追问计划或设计，直到每个决策分支都有结论。 |
 | [`ikadesign3`](ikadesign3/SKILL.md) | 从现有前端代码、网站或截图提取 design.md，按品牌要求创建 design.md，或按 design.md 实现和审查页面。design.md 只描述 UI 呈现，不描述产品功能。 |
-| [`ste-writing`](ste-writing/SKILL.md) | 按 ASD-STE100 派生的受控规则编写、改写或审查技术文本。 |
 
 ## 安装
 
@@ -35,16 +34,11 @@ bunx skills update --global
 
 ### omp
 
-skills CLI 不支持 omp。把仓库克隆到 omp 的用户级 skills 目录：
+omp 能读取 skills CLI 安装到 `~/.agents/skills` 的 skills，所以不需要单独安装。在 `~/.omp/agent/config.yml` 中打开用户级 `.agents` 来源：
 
-```bash
-git clone https://github.com/Ikaleio/skills ~/.omp/agent/skills
-```
-
-更新：
-
-```bash
-git -C ~/.omp/agent/skills pull
+```yaml
+skills:
+  enableAgentsUser: true
 ```
 
 ## 添加 skill

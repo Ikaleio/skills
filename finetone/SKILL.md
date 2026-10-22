@@ -11,8 +11,7 @@ description: >-
   status log: lead with the point, say how facts connect, use spoken words,
   and keep each sentence to one thread. Do not use for documents, READMEs,
   specifications, pull request descriptions, commit messages, code comments,
-  prompts for other agents, or creative writing. Use ste-writing for
-  documents.
+  prompts for other agents, or creative writing.
 ---
 
 # Finetone
